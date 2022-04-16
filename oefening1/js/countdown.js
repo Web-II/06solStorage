@@ -49,8 +49,7 @@ class MilestonesComponent {
     );
   }
   addMilestone(name, date) {
-    if (name === '' || name === null || date === null)
-      alert('Name/Date milestone required');
+    if (name === '' || date === '') alert('Name/Date milestone required');
     else if (new Date(date) < new Date())
       alert("This milestone is today or already in the past and isn't added");
     else {
@@ -84,7 +83,8 @@ class MilestonesComponent {
       btn.setAttribute('style', 'margin-left:20px');
       btn.innerText = '-';
       btn.addEventListener('click', () => {
-        this.deleteMilestone(ind);
+        if (confirm('Click OK to confirm the deletion'))
+          this.deleteMilestone(ind);
       });
       li.appendChild(btn);
       document.getElementById('overview').appendChild(li);
@@ -132,7 +132,9 @@ function init() {
   };
 
   clearButton.onclick = () => {
-    milestonesComponent.clearMilestones();
+    if (confirm('Click OK to clear all milestones'))
+      milestonesComponent.clearMilestones();
   };
 }
 window.onload = init;
+
