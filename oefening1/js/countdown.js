@@ -16,13 +16,9 @@ class MilestonesComponent {
     return this.#milestones;
   }
 
-  diffDays(d) {
-    return calculateDiffDays(d, new Date());
-  }
-
   addMilestone(name, date) {
-    if (name === "" || date === "") alert("Name/Date milestone required");
-    else if (this.diffDays(date) < 1)
+    if (!name || !date) alert("Name/Date milestone required");
+    else if (calculateDiffDays(date) < 1)
       alert("This milestone is today or already in the past and isn't added");
     else {
       this.#milestones.push(new Milestone(name, date));
@@ -47,7 +43,7 @@ class MilestonesComponent {
       li.setAttribute("class", "list-group-item col-sm-8");
       li.appendChild(
         document.createTextNode(
-          this.diffDays(m.date) + " days left until " + m.name
+          calculateDiffDays(m.date) + " days left until " + m.name
         )
       );
       const btn = document.createElement("button");
@@ -66,16 +62,13 @@ class MilestonesComponent {
     this.#milestones = [];
     const mA = this.#storage.getItem("milestones");
     if (mA) {
-      this.#milestones = JSON.parse(mA).map(
-        (m) => new Milestone(m.name, m.date)
-      );
-      this.#milestones = this.#milestones.filter(
-        (m) => this.diffDays(m.date) > 0
-      );
+      this.#milestones = JSON.parse(mA)
+        .map((m) => new Milestone(m.name, m.date))
+        .filter((m) => calculateDiffDays(m.date) > 0);
     }
   }
   setMilestonesInStorage() {
-    this.#milestones.sort((a, b) => new Date(a.date) - new Date(b.date));
+    this.#milestones.sort((a, b) => calculateDiffDays(a.date, b.date));
     this.#storage.setItem("milestones", JSON.stringify(this.#milestones));
   }
 }
