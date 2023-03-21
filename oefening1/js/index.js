@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 class Milestone {
   #name;
   #date;
@@ -49,7 +49,7 @@ class MilestonesComponent {
     );
   }
   addMilestone(name, date) {
-    if (name === '' || date === '') alert('Name/Date milestone required');
+    if (name === "" || date === "") alert("Name/Date milestone required");
     else if (new Date(date) < new Date())
       alert("This milestone is today or already in the past and isn't added");
     else {
@@ -65,34 +65,34 @@ class MilestonesComponent {
   }
   clearMilestones() {
     this.#milestones = [];
-    this.#storage.removeItem('milestones');
+    this.#storage.removeItem("milestones");
     this.toHTML();
   }
   toHTML() {
-    document.getElementById('overview').innerHTML = '';
+    document.getElementById("overview").innerHTML = "";
     this.#milestones.map((m, ind) => {
-      const li = document.createElement('li');
-      li.setAttribute('class', 'list-group-item col-sm-8');
+      const li = document.createElement("li");
+      li.setAttribute("class", "list-group-item col-sm-8");
       li.appendChild(
         document.createTextNode(
-          this.calculateDiffDays(m.date) + ' days left until ' + m.name
+          this.calculateDiffDays(m.date) + " days left until " + m.name
         )
       );
-      const btn = document.createElement('button');
-      btn.setAttribute('class', 'btn btn-default');
-      btn.setAttribute('style', 'margin-left:20px');
-      btn.innerText = '-';
-      btn.addEventListener('click', () => {
-        if (confirm('Click OK to confirm the deletion'))
+      const btn = document.createElement("button");
+      btn.setAttribute("class", "btn btn-default");
+      btn.setAttribute("style", "margin-left:20px");
+      btn.innerText = "-";
+      btn.addEventListener("click", () => {
+        if (confirm("Click OK to confirm the deletion"))
           this.deleteMilestone(ind);
       });
       li.appendChild(btn);
-      document.getElementById('overview').appendChild(li);
+      document.getElementById("overview").appendChild(li);
     });
   }
   getMilestonesFromStorage() {
     this.#milestones = [];
-    const mA = this.#storage.getItem('milestones');
+    const mA = this.#storage.getItem("milestones");
     if (mA) {
       this.#milestones = JSON.parse(mA).map(
         (m) => new Milestone(m.name, m.date)
@@ -104,20 +104,20 @@ class MilestonesComponent {
   }
   setMilestonesInStorage() {
     this.#milestones.sort((a, b) => new Date(a.date) - new Date(b.date));
-    this.#storage.setItem('milestones', JSON.stringify(this.#milestones));
+    this.#storage.setItem("milestones", JSON.stringify(this.#milestones));
   }
 }
 
 function init() {
   const milestonesComponent = new MilestonesComponent(this.localStorage);
-  const addButton = document.getElementById('add');
-  const clearButton = document.getElementById('clear');
-  const nameText = document.getElementById('name');
-  const dateText = document.getElementById('date');
+  const addButton = document.getElementById("add");
+  const clearButton = document.getElementById("clear");
+  const nameText = document.getElementById("name");
+  const dateText = document.getElementById("date");
 
   if (!milestonesComponent.storage) {
     //browser ondersteunt geen storage
-    alert('no storage available. ');
+    alert("no storage available. ");
     addButton.disabled = true;
     clearButton.disabled = true;
     return;
@@ -128,13 +128,12 @@ function init() {
 
   addButton.onclick = () => {
     milestonesComponent.addMilestone(nameText.value, dateText.value);
-    nameText.value = '';
+    nameText.value = "";
   };
 
   clearButton.onclick = () => {
-    if (confirm('Click OK to clear all milestones'))
+    if (confirm("Click OK to clear all milestones"))
       milestonesComponent.clearMilestones();
   };
 }
 window.onload = init;
-
