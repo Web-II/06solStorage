@@ -6,23 +6,11 @@ export default class MilestonesComponent {
   constructor(storage) {
     this.#storage = storage;
     this.#getMilestonesFromStorage();
-    this.#initialiseEventHandlers();
-    this.#toHTML();
-  }
 
-  #initialiseEventHandlers() {
     const addButton = document.getElementById("add");
     const clearButton = document.getElementById("clear");
     const nameText = document.getElementById("name");
     const dateText = document.getElementById("date");
-
-    if (!this.#storage) {
-      //browser ondersteunt geen storage
-      alert("no storage available. ");
-      addButton.disabled = true;
-      clearButton.disabled = true;
-      return;
-    }
 
     addButton.onclick = () => {
       try {
@@ -30,15 +18,17 @@ export default class MilestonesComponent {
         nameText.value = "";
         dateText.value = "";
       } catch (e) {
-        {
-          alert(e.message);
-        }
+        alert(e.message);
       }
     };
 
     clearButton.onclick = () => {
-      if (confirm("Click OK to clear all milestones")) this.#clearMilestones();
+      if (confirm("Click OK to clear all milestones")) {
+        this.#clearMilestones();
+      }
     };
+
+    this.#toHTML();
   }
 
   #addMilestone(name, date) {
@@ -46,7 +36,7 @@ export default class MilestonesComponent {
       throw new Error("Name milestone is required.");
     }
 
-    if (!date || isNaN(date)) {
+    if (!date || !(date instanceof Date) || isNaN(date)) {
       throw new Error("Date milestone is required.");
     }
 
@@ -98,9 +88,9 @@ export default class MilestonesComponent {
 
   #getMilestonesFromStorage() {
     this.#milestones = [];
-    const mA = this.#storage.getItem("milestones");
-    if (mA) {
-      this.#milestones = JSON.parse(mA).map(
+    const milestonesAsJson = this.#storage.getItem("milestones");
+    if (milestonesAsJson) {
+      this.#milestones = JSON.parse(milestonesAsJson).map(
         (m) => new Milestone(m.name, m.date)
       );
       this.#milestones = this.#milestones.filter(
